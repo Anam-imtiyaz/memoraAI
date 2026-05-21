@@ -1,0 +1,43 @@
+function MemoryUpload() {
+  return (
+    <div className="bg-white p-8 rounded-3xl shadow-md border border-gray-200">
+
+      <h2 className="text-xl font-semibold text-gray-700 mb-2">
+        Upload Memories
+      </h2>
+
+      <p className="text-gray-500 text-sm mb-6">
+        Upload PDFs or screenshots
+      </p>
+
+      <label
+        className="flex flex-col items-center justify-center border-2 border-dashed border-purple-200 rounded-2xl p-10 bg-purple-50 cursor-pointer hover:bg-purple-100 transition"
+      >
+
+
+     <p className="text-gray-700 font-medium">
+        Drag and drop files here
+    </p>
+
+    <p className="text-gray-400 text-sm mt-1">
+        or click to browse PDFs and screenshots
+    </p>
+
+        <input
+          type="file"
+          className="hidden"
+        />
+
+      </label>
+
+      <button
+        className="mt-6 w-full py-3 rounded-xl bg-purple-200 hover:bg-purple-300 transition"
+      >
+        Upload
+      </button>
+
+    </div>
+  );
+}
+
+export default MemoryUpload;
