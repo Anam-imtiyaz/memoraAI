@@ -1,4 +1,26 @@
+import { useState } from "react";
+
 function MemoryUpload() {
+
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const [uploading, setUploading] = useState(false);
+
+  function handleFileChange(event) {
+    setSelectedFile(event.target.files[0]);
+  }
+  function handleUpload() {
+
+  if (!selectedFile) return;
+
+  setUploading(true);
+
+  setTimeout(() => {
+    setUploading(false);
+  }, 2000);
+
+}
+
   return (
     <div className="bg-white p-8 rounded-3xl shadow-md border border-gray-200">
 
@@ -10,31 +32,51 @@ function MemoryUpload() {
         Upload PDFs or screenshots
       </p>
 
-      <label
-        className="flex flex-col items-center justify-center border-2 border-dashed border-purple-200 rounded-2xl p-10 bg-purple-50 cursor-pointer hover:bg-purple-100 transition"
-      >
+     <label
+  htmlFor="memoryFile"
+  className="flex flex-col items-center justify-center border-2 border-dashed border-purple-200 rounded-2xl p-10 bg-purple-50 cursor-pointer hover:bg-purple-100 transition"
+>
 
+        <p className="text-gray-700 font-medium">
+          Drag and drop files here
+        </p>
 
-     <p className="text-gray-700 font-medium">
-        Drag and drop files here
-    </p>
+        <p className="text-gray-400 text-sm mt-1">
+          or click to browse PDFs and screenshots
+        </p>
 
-    <p className="text-gray-400 text-sm mt-1">
-        or click to browse PDFs and screenshots
-    </p>
-
-        <input
-          type="file"
-          className="hidden"
+      <input
+        id="memoryFile"
+        type="file"
+        accept=".pdf,.png,.jpg,.jpeg"
+        className="hidden"
+        onChange={handleFileChange}
         />
 
       </label>
 
-      <button
-        className="mt-6 w-full py-3 rounded-xl bg-purple-200 hover:bg-purple-300 transition"
-      >
-        Upload
-      </button>
+      {selectedFile && (
+        <div className="mt-4 p-3 rounded-xl bg-purple-50 border border-purple-100">
+
+             <p className="text-sm text-gray-700 font-medium">
+      Selected File
+             </p>
+
+             <p className="text-sm text-gray-500 mt-1">
+      {selectedFile.name}
+             </p>
+
+        </div>
+        )}
+
+     <button
+ onClick={handleUpload}
+ className="mt-6 w-full py-3 rounded-xl bg-purple-200 hover:bg-purple-300 transition"
+>
+
+ {uploading ? "Uploading..." : "Upload"}
+
+</button>
 
     </div>
   );
