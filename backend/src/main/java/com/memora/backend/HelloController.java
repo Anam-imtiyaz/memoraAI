@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloController {
 
     @PostMapping("/hello")
-    public String hello(@RequestBody String fileName) {
-        return "Received: " + fileName;
+    public String hello(@RequestBody Memory memory) {
+
+        return "Received: " + memory.getFileName();
+
     }
 }

@@ -20,9 +20,12 @@ function MemoryUpload() {
  const response = await fetch("http://localhost:8081/hello", {
   method: "POST",
   headers: {
-    "Content-Type": "text/plain"
+    "Content-Type": "application/json"
   },
-  body: selectedFile.name
+  body: JSON.stringify({
+  fileName: selectedFile.name,
+  uploadedAt: new Date().toLocaleDateString()
+})
 });
 
 const data = await response.text();
