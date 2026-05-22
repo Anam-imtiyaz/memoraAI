@@ -9,16 +9,33 @@ function MemoryUpload() {
   function handleFileChange(event) {
     setSelectedFile(event.target.files[0]);
   }
-  function handleUpload() {
+ async function handleUpload() {
 
   if (!selectedFile) return;
 
   setUploading(true);
 
-  setTimeout(() => {
-    setUploading(false);
-  }, 2000);
+  try {
 
+ const response = await fetch("http://localhost:8081/hello", {
+  method: "POST",
+  headers: {
+    "Content-Type": "text/plain"
+  },
+  body: selectedFile.name
+});
+
+const data = await response.text();
+console.log(data);
+
+  console.log(data);
+
+} catch(error) {
+
+  console.log(error);
+
+}
+  setUploading(false);
 }
 
   return (

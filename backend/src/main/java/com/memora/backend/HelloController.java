@@ -1,15 +1,16 @@
 package com.memora.backend;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin("http://localhost:5173")
 public class HelloController {
 
-    @GetMapping("/hello")
-    public String hello() {
-        return "MemoraAI backend is working";
+    @PostMapping("/hello")
+    public String hello(@RequestBody String fileName) {
+        return "Received: " + fileName;
     }
 }
