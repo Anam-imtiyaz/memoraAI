@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function MemoryUpload() {
+function MemoryUpload({ setMemories }) {
 
   const [selectedFile, setSelectedFile] = useState(null);
 
@@ -29,9 +29,16 @@ function MemoryUpload() {
 });
 
 const data = await response.text();
-console.log(data);
 
-  console.log(data);
+  setMemories(old => [
+  {
+    fileName: selectedFile.name,
+    uploadedAt: "just now"
+  },
+  ...old
+]);
+
+console.log(data);
 
 } catch(error) {
 

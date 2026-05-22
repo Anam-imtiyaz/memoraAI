@@ -1,7 +1,16 @@
+import { useEffect, useState } from "react";
 import MemoryUpload from "./components/MemoryUpload";
 import MemoryItem from "./components/MemoryItem";
 
 function App() {
+const [memories, setMemories] = useState([]);
+  useEffect(() => {
+  fetch("http://localhost:8081/memories")
+    .then(res => res.json())
+    .then(data => setMemories(data))
+    .catch(err => console.log(err));
+
+}, []);
   return (
     <div className="min-h-screen bg-slate-200 p-8">
       <div className="max-w-3xl mx-auto">
@@ -14,8 +23,25 @@ function App() {
           Search your memories by meaning.
         </p>
 
-        <MemoryUpload />
-        <MemoryItem />
+        <MemoryUpload setMemories={setMemories} />
+       {memories.map((item, index) => (
+        <MemoryItem
+          key={index}
+          fileName={item.fileName}
+          uploadedAt={item.uploadedAt}
+          onDelete={async () => {
+
+          await fetch(`http://localhost:8081/memories/${index}`, {
+            method: "DELETE"
+          });
+
+          setMemories(
+            memories.filter((_, i) => i !== index)
+          );
+
+        }}
+        />
+      ))}
 
       </div>
     </div>
