@@ -24,24 +24,42 @@ const [memories, setMemories] = useState([]);
         </p>
 
         <MemoryUpload setMemories={setMemories} />
-       {memories.map((item, index) => (
-        <MemoryItem
-          key={index}
-          fileName={item.fileName}
-          uploadedAt={item.uploadedAt}
-          onDelete={async () => {
+       {memories.length === 0 ? (
 
-          await fetch(`http://localhost:8081/memories/${index}`, {
+  <div className="bg-white p-6 rounded-2xl mt-6 text-center">
+    <p className="text-gray-700 font-medium">
+      No memories yet
+    </p>
+
+    <p className="text-sm text-gray-400 mt-2">
+      Upload something to get started
+    </p>
+  </div>
+
+) : (
+
+  memories.map((item, index) => (
+    <MemoryItem
+      key={index}
+      fileName={item.fileName}
+      uploadedAt={item.uploadedAt}
+      onDelete={async () => {
+
+        await fetch(
+          `http://localhost:8081/memories/${index}`,
+          {
             method: "DELETE"
-          });
+          }
+        );
 
-          setMemories(
-            memories.filter((_, i) => i !== index)
-          );
-
-        }}
+            setMemories(
+              memories.filter((_, i) => i !== index)
+            );
+          }}
         />
-      ))}
+      ))
+
+    )}
 
       </div>
     </div>
