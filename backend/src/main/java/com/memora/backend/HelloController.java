@@ -1,26 +1,26 @@
 package com.memora.backend;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import com.memora.backend.model.Memory;
+import com.memora.backend.repository.MemoryRepository;
 
 @RestController
 @CrossOrigin("http://localhost:5173")
 public class HelloController {
 
-    List<Memory> memories = new ArrayList<>();
+    private final MemoryRepository memoryRepository;
+
+    public HelloController(MemoryRepository memoryRepository) {
+        this.memoryRepository = memoryRepository;
+    }
 
     @PostMapping("/hello")
     public String hello(@RequestBody Memory memory) {
 
-        memories.add(memory);
+        memoryRepository.save(memory);
 
         return "Saved " + memory.getFileName();
     }
@@ -28,12 +28,22 @@ public class HelloController {
     @GetMapping("/memories")
     public List<Memory> getMemories() {
 
-        return memories;
+        return memoryRepository.findAll();
     }
 
-    @DeleteMapping("/memories/{index}")
-    public void deleteMemory(@PathVariable int index) {
+    @GetMapping("/memories/search")
+    public List<Memory> searchMemories(
+            @RequestParam String query) {
 
-        memories.remove(index);
+        return memoryRepository.findByFileNameContainingIgnoreCase(query);
+
+    }
+
+    @DeleteMapping("/memories/{fileName}")
+    public void deleteMemory(
+            @PathVariable String fileName) {
+
+        memoryRepository.deleteById(fileName);
+
     }
 }

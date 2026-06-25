@@ -1,0 +1,17 @@
+# H2 Database
+*.mv.db
+*.trace.db
+
+# Maven
+backend/target/
+
+# React
+frontend/node_modules/
+frontend/dist/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log

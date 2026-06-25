@@ -3,50 +3,60 @@ import { useState } from "react";
 function MemoryUpload({ setMemories }) {
 
   const [selectedFile, setSelectedFile] = useState(null);
-
   const [uploading, setUploading] = useState(false);
 
   function handleFileChange(event) {
     setSelectedFile(event.target.files[0]);
   }
- async function handleUpload() {
 
-  if (!selectedFile) return;
+  async function handleUpload() {
 
-  setUploading(true);
+    if (!selectedFile) {
+      alert("Please select a file first.");
+      return;
+    }
 
-  try {
+    setUploading(true);
 
- const response = await fetch("http://localhost:8081/hello", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-  fileName: selectedFile.name,
-  uploadedAt: new Date().toLocaleDateString()
-})
-});
+    try {
 
-const data = await response.text();
+      const response = await fetch("http://localhost:8081/hello", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          fileName: selectedFile.name,
+          uploadedAt: new Date().toLocaleDateString()
+        })
+      });
 
-  setMemories(old => [
-  {
-    fileName: selectedFile.name,
-    uploadedAt: "just now"
-  },
-  ...old
-]);
+      const data = await response.text();
 
-console.log(data);
+      console.log(data);
 
-} catch(error) {
+      setMemories(old => [
+        {
+          fileName: selectedFile.name,
+          uploadedAt: "Just now"
+        },
+        ...old
+      ]);
 
-  console.log(error);
+      setSelectedFile(null);
 
-}
-  setUploading(false);
-}
+      document.getElementById("memoryFile").value = "";
+
+    } catch (error) {
+
+      console.log(error);
+      alert("Upload failed.");
+
+    }
+
+    setUploading(false);
+
+  }
 
   return (
     <div className="bg-white p-8 rounded-3xl shadow-md border border-gray-200">
@@ -59,10 +69,10 @@ console.log(data);
         Upload PDFs or screenshots
       </p>
 
-     <label
-  htmlFor="memoryFile"
-  className="flex flex-col items-center justify-center border-2 border-dashed border-purple-200 rounded-2xl p-10 bg-purple-50 cursor-pointer hover:bg-purple-100 transition"
->
+      <label
+        htmlFor="memoryFile"
+        className="flex flex-col items-center justify-center border-2 border-dashed border-purple-200 rounded-2xl p-10 bg-purple-50 cursor-pointer hover:bg-purple-100 transition"
+      >
 
         <p className="text-gray-700 font-medium">
           Drag and drop files here
@@ -72,38 +82,41 @@ console.log(data);
           or click to browse PDFs and screenshots
         </p>
 
-      <input
-        id="memoryFile"
-        type="file"
-        accept=".pdf,.png,.jpg,.jpeg"
-        className="hidden"
-        onChange={handleFileChange}
+        <input
+          id="memoryFile"
+          type="file"
+          accept=".pdf,.png,.jpg,.jpeg"
+          className="hidden"
+          onChange={handleFileChange}
         />
 
       </label>
 
       {selectedFile && (
+
         <div className="mt-4 p-3 rounded-xl bg-purple-50 border border-purple-100">
 
-             <p className="text-sm text-gray-700 font-medium">
-      Selected File
-             </p>
+          <p className="text-sm text-gray-700 font-medium">
+            Selected File
+          </p>
 
-             <p className="text-sm text-gray-500 mt-1">
-      {selectedFile.name}
-             </p>
+          <p className="text-sm text-gray-500 mt-1">
+            {selectedFile.name}
+          </p>
 
         </div>
-        )}
 
-     <button
- onClick={handleUpload}
- className="mt-6 w-full py-3 rounded-xl bg-purple-200 hover:bg-purple-300 transition"
->
+      )}
 
- {uploading ? "Uploading..." : "Upload"}
+      <button
+        onClick={handleUpload}
+        disabled={uploading}
+        className="mt-6 w-full py-3 rounded-xl bg-purple-200 hover:bg-purple-300 disabled:bg-gray-300 transition"
+      >
 
-</button>
+        {uploading ? "Uploading..." : "Upload"}
+
+      </button>
 
     </div>
   );

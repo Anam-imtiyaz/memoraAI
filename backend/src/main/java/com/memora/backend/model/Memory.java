@@ -1,9 +1,15 @@
-package com.memora.backend;
+package com.memora.backend.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class Memory {
 
-    String fileName;
-    String uploadedAt;
+    @Id
+    private String fileName;
+
+    private String uploadedAt;
 
     public String getFileName() {
         return fileName;

@@ -22,3 +22,20 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# Node
+node_modules/
+
+# Build folders
+target/
+dist/
+
+# H2 Database
+*.mv.db
+*.trace.db
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+*.log
