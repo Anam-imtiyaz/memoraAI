@@ -20,10 +20,13 @@ function MemoryUpload({ setMemories }) {
 
     try {
 
+      const token = localStorage.getItem("token");
+
       const response = await fetch("http://localhost:8081/hello", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
           fileName: selectedFile.name,
@@ -33,7 +36,14 @@ function MemoryUpload({ setMemories }) {
 
       const data = await response.text();
 
-      console.log(data);
+      console.log("Status:", response.status);
+      console.log("Response:", data);
+
+      if (!response.ok) {
+        alert(data);
+        setUploading(false);
+        return;
+      }
 
       setMemories(old => [
         {
@@ -44,7 +54,6 @@ function MemoryUpload({ setMemories }) {
       ]);
 
       setSelectedFile(null);
-
       document.getElementById("memoryFile").value = "";
 
     } catch (error) {
@@ -59,6 +68,7 @@ function MemoryUpload({ setMemories }) {
   }
 
   return (
+
     <div className="bg-white p-8 rounded-3xl shadow-md border border-gray-200">
 
       <h2 className="text-xl font-semibold text-gray-700 mb-2">
@@ -119,6 +129,7 @@ function MemoryUpload({ setMemories }) {
       </button>
 
     </div>
+
   );
 }
 

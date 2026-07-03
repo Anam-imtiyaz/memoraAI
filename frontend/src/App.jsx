@@ -1,13 +1,23 @@
 import { useEffect, useState } from "react";
 import MemoryUpload from "./components/MemoryUpload";
 import MemoryItem from "./components/MemoryItem";
+import Login from "./components/Login";
+import Signup from "./components/Signup";
 
 function App() {
 
   const [memories, setMemories] = useState([]);
   const [searchText, setSearchText] = useState("");
 
+  const [loggedIn, setLoggedIn] = useState(
+    localStorage.getItem("token") !== null
+  );
+
+  const [showSignup, setShowSignup] = useState(true);
+
   useEffect(() => {
+
+    if (!loggedIn) return;
 
     let url = "http://localhost:8081/memories";
 
@@ -20,20 +30,110 @@ function App() {
       .then((data) => setMemories(data))
       .catch((err) => console.log(err));
 
-  }, [searchText]);
+  }, [searchText, loggedIn]);
+
+  function logout() {
+
+    localStorage.removeItem("token");
+    setLoggedIn(false);
+    setMemories([]);
+
+  }
+
+  if (!loggedIn) {
+
+    return (
+
+      <div className="min-h-screen bg-slate-200 flex items-center justify-center">
+
+        <div className="w-full max-w-md">
+
+          <h1 className="text-4xl font-bold text-center mb-8">
+            MemoraAI
+          </h1>
+
+          {showSignup ? (
+
+            <>
+              <Signup
+                onSignup={() => setShowSignup(false)}
+              />
+
+              <p className="text-center mt-5">
+
+                Already have an account?
+
+                <button
+                  onClick={() => setShowSignup(false)}
+                  className="text-purple-600 ml-2"
+                >
+                  Login
+                </button>
+
+              </p>
+
+            </>
+
+          ) : (
+
+            <>
+              <Login
+                onLogin={() => setLoggedIn(true)}
+              />
+
+              <p className="text-center mt-5">
+
+                Don't have an account?
+
+                <button
+                  onClick={() => setShowSignup(true)}
+                  className="text-purple-600 ml-2"
+                >
+                  Sign Up
+                </button>
+
+              </p>
+
+            </>
+
+          )}
+
+        </div>
+
+      </div>
+
+    );
+
+  }
 
   return (
+
     <div className="min-h-screen bg-slate-200 p-8">
 
       <div className="max-w-3xl mx-auto">
 
-        <h1 className="text-4xl font-bold text-gray-800">
-          MemoraAI
-        </h1>
+        <div className="flex justify-between items-center">
 
-        <p className="text-gray-500 mt-2 mb-8">
-          Search your memories by meaning.
-        </p>
+          <div>
+
+            <h1 className="text-4xl font-bold text-gray-800">
+              MemoraAI
+            </h1>
+
+            <p className="text-gray-500 mt-2">
+              Search your memories by meaning.
+            </p>
+
+          </div>
+
+          <button
+            onClick={logout}
+            className="bg-red-100 text-red-600 px-4 py-2 rounded-xl hover:bg-red-200"
+          >
+            Logout
+          </button>
+
+        </div>
 
         <MemoryUpload setMemories={setMemories} />
 
@@ -100,7 +200,9 @@ function App() {
       </div>
 
     </div>
+
   );
+
 }
 
 export default App;

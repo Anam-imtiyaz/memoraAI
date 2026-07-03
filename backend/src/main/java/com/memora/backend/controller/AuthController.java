@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.memora.backend.auth.LoginRequest;
 import com.memora.backend.auth.SignupRequest;
 import com.memora.backend.service.AuthService;
 
@@ -23,6 +24,11 @@ public class AuthController {
     @PostMapping("/signup")
     public String signup(@RequestBody SignupRequest request) {
         return authService.signup(request);
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestBody LoginRequest request) {
+        return authService.login(request);
     }
 
 }

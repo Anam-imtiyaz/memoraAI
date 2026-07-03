@@ -11,19 +11,33 @@ public class Memory {
 
     private String uploadedAt;
 
+    private String userEmail;
+
+    public Memory() {
+    }
+
     public String getFileName() {
         return fileName;
     }
 
-    public void setFileName(String name) {
-        fileName = name;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public String getUploadedAt() {
         return uploadedAt;
     }
 
-    public void setUploadedAt(String date) {
-        uploadedAt = date;
+    public void setUploadedAt(String uploadedAt) {
+        this.uploadedAt = uploadedAt;
     }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
 }
