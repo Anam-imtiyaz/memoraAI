@@ -1,21 +1,22 @@
 package com.memora.backend.security;
 
+import java.security.Key;
 import java.util.Date;
-
-import javax.crypto.SecretKey;
 
 import org.springframework.stereotype.Component;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtUtil {
 
-    private final String SECRET =
+    private static final String SECRET =
             "memoraaisupersecretkeymemoraaisupersecretkey123";
 
-    private final SecretKey key =
+    private final Key key =
             Keys.hmacShaKeyFor(SECRET.getBytes());
 
     public String generateToken(String email) {
@@ -23,13 +24,46 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 86400000))
-                .signWith(key)
+                .setExpiration(
+                        new Date(System.currentTimeMillis() + 86400000)
+                )
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
     }
 
-    public SecretKey getKey() {
+    public String extractEmail(String token) {
+
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.getSubject();
+
+    }
+
+    public boolean isTokenValid(String token) {
+
+        try {
+
+            Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
+
+            return true;
+
+        } catch (Exception e) {
+
+            return false;
+
+        }
+
+    }
+
+    public Key getKey() {
         return key;
     }
 

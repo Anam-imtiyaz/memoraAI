@@ -31,36 +31,36 @@ public class SecurityConfig {
             throws Exception {
 
         http
-                .csrf(csrf -> csrf.disable())
+            .csrf(csrf -> csrf.disable())
 
-                .cors(cors -> {})
+            .cors(cors -> {})
 
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .sessionManagement(session ->
+                    session.sessionCreationPolicy(
+                            SessionCreationPolicy.STATELESS))
 
-                .authorizeHttpRequests(auth -> auth
+            .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                        .requestMatchers(
-                                "/auth/signup",
-                                "/auth/login",
-                                "/h2-console/**"
-                        ).permitAll()
+                    .requestMatchers(
+                            "/auth/signup",
+                            "/auth/login",
+                            "/h2-console/**"
+                    ).permitAll()
 
-                        .anyRequest().authenticated()
-                )
+                    .anyRequest().authenticated()
+            )
 
-                .headers(headers ->
-                        headers.frameOptions(frame -> frame.disable())
-                )
+            .headers(headers ->
+                    headers.frameOptions(frame -> frame.disable())
+            )
 
-                .addFilterBefore(
-                        jwtFilter,
-                        UsernamePasswordAuthenticationFilter.class
-                );
+            .addFilterBefore(
+                    jwtFilter,
+                    UsernamePasswordAuthenticationFilter.class
+            );
 
         return http.build();
     }
-
 }

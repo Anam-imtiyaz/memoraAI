@@ -19,13 +19,19 @@ function App() {
 
     if (!loggedIn) return;
 
+    const token = localStorage.getItem("token");
+
     let url = "http://localhost:8081/memories";
 
     if (searchText.trim() !== "") {
       url = `http://localhost:8081/memories/search?query=${searchText}`;
     }
 
-    fetch(url)
+    fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
       .then((res) => res.json())
       .then((data) => setMemories(data))
       .catch((err) => console.log(err));
@@ -55,12 +61,9 @@ function App() {
           {showSignup ? (
 
             <>
-              <Signup
-                onSignup={() => setShowSignup(false)}
-              />
+              <Signup onSignup={() => setShowSignup(false)} />
 
               <p className="text-center mt-5">
-
                 Already have an account?
 
                 <button
@@ -77,12 +80,9 @@ function App() {
           ) : (
 
             <>
-              <Login
-                onLogin={() => setLoggedIn(true)}
-              />
+              <Login onLogin={() => setLoggedIn(true)} />
 
               <p className="text-center mt-5">
-
                 Don't have an account?
 
                 <button
@@ -169,12 +169,17 @@ function App() {
               uploadedAt={item.uploadedAt}
               onDelete={async () => {
 
+                const token = localStorage.getItem("token");
+
                 try {
 
                   await fetch(
                     `http://localhost:8081/memories/${item.fileName}`,
                     {
-                      method: "DELETE"
+                      method: "DELETE",
+                      headers: {
+                        Authorization: `Bearer ${token}`
+                      }
                     }
                   );
 
