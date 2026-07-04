@@ -3,20 +3,18 @@ package com.memora.backend;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.memora.backend.model.DocumentChunk;
 import com.memora.backend.model.Memory;
+import com.memora.backend.repository.DocumentChunkRepository;
 import com.memora.backend.repository.MemoryRepository;
+import com.memora.backend.service.ChunkService;
 import com.memora.backend.service.PdfService;
 
 @RestController
@@ -24,14 +22,20 @@ import com.memora.backend.service.PdfService;
 public class HelloController {
 
     private final MemoryRepository memoryRepository;
+    private final DocumentChunkRepository chunkRepository;
     private final PdfService pdfService;
+    private final ChunkService chunkService;
 
     public HelloController(
             MemoryRepository memoryRepository,
-            PdfService pdfService) {
+            DocumentChunkRepository chunkRepository,
+            PdfService pdfService,
+            ChunkService chunkService) {
 
         this.memoryRepository = memoryRepository;
+        this.chunkRepository = chunkRepository;
         this.pdfService = pdfService;
+        this.chunkService = chunkService;
     }
 
     @PostMapping("/hello")
@@ -41,8 +45,8 @@ public class HelloController {
 
         String uploadPath =
                 System.getProperty("user.dir")
-                + File.separator
-                + "uploads";
+                        + File.separator
+                        + "uploads";
 
         File uploadDir = new File(uploadPath);
 
@@ -66,14 +70,27 @@ public class HelloController {
         }
 
         Memory memory = new Memory();
-
         memory.setFileName(fileName);
-        memory.setUploadedAt(java.time.LocalDate.now().toString());
+        memory.setUploadedAt(LocalDate.now().toString());
         memory.setUserEmail(authentication.getName());
         memory.setFilePath(destination.getAbsolutePath());
         memory.setExtractedText(extractedText);
 
-        memoryRepository.save(memory);
+        memory = memoryRepository.save(memory);
+
+        List<String> chunks =
+                chunkService.splitIntoChunks(extractedText);
+
+        for (int i = 0; i < chunks.size(); i++) {
+
+            DocumentChunk chunk = new DocumentChunk();
+
+            chunk.setMemory(memory);
+            chunk.setChunkIndex(i);
+            chunk.setChunkText(chunks.get(i));
+
+            chunkRepository.save(chunk);
+        }
 
         return "File uploaded successfully";
     }
@@ -111,6 +128,10 @@ public class HelloController {
         if (memory == null) {
             return;
         }
+
+        chunkRepository.deleteAll(
+                chunkRepository.findByMemory(memory)
+        );
 
         File file = new File(memory.getFilePath());
 
