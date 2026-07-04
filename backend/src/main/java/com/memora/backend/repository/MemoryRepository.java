@@ -6,9 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.memora.backend.model.Memory;
 
-public interface MemoryRepository extends JpaRepository<Memory, String> {
-
-    List<Memory> findByFileNameContainingIgnoreCase(String fileName);
+public interface MemoryRepository extends JpaRepository<Memory, Long> {
 
     List<Memory> findByUserEmail(String userEmail);
 
@@ -17,4 +15,8 @@ public interface MemoryRepository extends JpaRepository<Memory, String> {
             String fileName
     );
 
+    Memory findByFileNameAndUserEmail(
+            String fileName,
+            String userEmail
+    );
 }

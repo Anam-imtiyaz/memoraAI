@@ -22,16 +22,15 @@ function MemoryUpload({ setMemories }) {
 
       const token = localStorage.getItem("token");
 
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+
       const response = await fetch("http://localhost:8081/hello", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({
-          fileName: selectedFile.name,
-          uploadedAt: new Date().toLocaleDateString()
-        })
+        body: formData
       });
 
       const data = await response.text();
