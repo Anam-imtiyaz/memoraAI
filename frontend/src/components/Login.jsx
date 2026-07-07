@@ -4,8 +4,16 @@ function Login({ onLogin }) {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   async function handleLogin() {
+
+    if (!email || !password) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    setLoading(true);
 
     try {
 
@@ -28,6 +36,7 @@ function Login({ onLogin }) {
       ) {
 
         alert(token);
+        setLoading(false);
         return;
 
       }
@@ -39,40 +48,68 @@ function Login({ onLogin }) {
     } catch (error) {
 
       console.log(error);
+      alert("Unable to login.");
 
     }
+
+    setLoading(false);
 
   }
 
   return (
 
-    <div className="bg-white p-8 rounded-3xl shadow-md">
+    <div className="bg-white rounded-3xl shadow-xl border border-purple-100 p-8">
 
-      <h2 className="text-2xl font-bold mb-6">
-        Login
+      <h2 className="text-3xl font-bold text-gray-800">
+        Welcome Back
       </h2>
 
-      <input
-        type="email"
-        placeholder="Email"
-        className="w-full border p-3 rounded-xl mb-4"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+      <p className="text-gray-500 mt-2 mb-8">
+        Login to continue to MemoraAI.
+      </p>
 
-      <input
-        type="password"
-        placeholder="Password"
-        className="w-full border p-3 rounded-xl mb-6"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+      <div className="space-y-5">
+
+        <div>
+
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Email
+          </label>
+
+          <input
+            type="email"
+            placeholder="you@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full rounded-xl border border-purple-200 px-4 py-3 outline-none focus:ring-2 focus:ring-purple-300"
+          />
+
+        </div>
+
+        <div>
+
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Password
+          </label>
+
+          <input
+            type="password"
+            placeholder="Enter your password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full rounded-xl border border-purple-200 px-4 py-3 outline-none focus:ring-2 focus:ring-purple-300"
+          />
+
+        </div>
+
+      </div>
 
       <button
         onClick={handleLogin}
-        className="w-full bg-purple-300 hover:bg-purple-400 rounded-xl py-3"
+        disabled={loading}
+        className="mt-8 w-full rounded-xl bg-purple-500 hover:bg-purple-600 text-white py-3 font-semibold transition disabled:bg-gray-300"
       >
-        Login
+        {loading ? "Logging in..." : "Login"}
       </button>
 
     </div>

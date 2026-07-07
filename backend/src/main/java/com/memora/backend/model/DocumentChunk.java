@@ -1,11 +1,6 @@
 package com.memora.backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 @Entity
 public class DocumentChunk {
@@ -20,7 +15,12 @@ public class DocumentChunk {
     private int chunkIndex;
 
     @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String chunkText;
+
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String embedding;
 
     public DocumentChunk() {
     }
@@ -51,5 +51,13 @@ public class DocumentChunk {
 
     public void setChunkText(String chunkText) {
         this.chunkText = chunkText;
+    }
+
+    public String getEmbedding() {
+        return embedding;
+    }
+
+    public void setEmbedding(String embedding) {
+        this.embedding = embedding;
     }
 }

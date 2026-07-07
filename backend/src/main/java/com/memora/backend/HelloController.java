@@ -7,7 +7,13 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.memora.backend.model.DocumentChunk;
@@ -42,8 +48,7 @@ public class HelloController {
     public String uploadMemory(
             @RequestParam("file") MultipartFile file,
             Authentication authentication) throws IOException {
-
-        String uploadPath =
+                        String uploadPath =
                 System.getProperty("user.dir")
                         + File.separator
                         + "uploads";
@@ -58,18 +63,26 @@ public class HelloController {
 
         File destination = new File(uploadDir, fileName);
 
-        try (FileOutputStream output = new FileOutputStream(destination)) {
+        try (FileOutputStream output =
+                     new FileOutputStream(destination)) {
+
             output.write(file.getBytes());
+
         }
 
         String extractedText = "";
 
-        if (fileName != null && fileName.toLowerCase().endsWith(".pdf")) {
+        if (fileName != null &&
+                fileName.toLowerCase().endsWith(".pdf")) {
+
             extractedText =
-                    pdfService.extractText(destination.getAbsolutePath());
+                    pdfService.extractText(
+                            destination.getAbsolutePath());
+
         }
 
         Memory memory = new Memory();
+
         memory.setFileName(fileName);
         memory.setUploadedAt(LocalDate.now().toString());
         memory.setUserEmail(authentication.getName());
@@ -96,7 +109,8 @@ public class HelloController {
     }
 
     @GetMapping("/memories")
-    public List<Memory> getMemories(Authentication authentication) {
+    public List<Memory> getMemories(
+            Authentication authentication) {
 
         return memoryRepository.findByUserEmail(
                 authentication.getName()
@@ -120,10 +134,11 @@ public class HelloController {
             @PathVariable String fileName,
             Authentication authentication) {
 
-        Memory memory = memoryRepository.findByFileNameAndUserEmail(
-                fileName,
-                authentication.getName()
-        );
+        Memory memory =
+                memoryRepository.findByFileNameAndUserEmail(
+                        fileName,
+                        authentication.getName()
+                );
 
         if (memory == null) {
             return;
@@ -141,4 +156,5 @@ public class HelloController {
 
         memoryRepository.delete(memory);
     }
+
 }

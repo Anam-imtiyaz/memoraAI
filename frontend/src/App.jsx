@@ -3,6 +3,7 @@ import MemoryUpload from "./components/MemoryUpload";
 import MemoryItem from "./components/MemoryItem";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
+import AskQuestion from "./components/AskQuestion";
 
 function App() {
 
@@ -34,9 +35,9 @@ function App() {
     })
       .then((res) => res.json())
       .then((data) => setMemories(data))
-      .catch((err) => console.log(err));
+      .catch(console.log);
 
-  }, [searchText, loggedIn]);
+  }, [loggedIn, searchText]);
 
   function logout() {
 
@@ -50,53 +51,141 @@ function App() {
 
     return (
 
-      <div className="min-h-screen bg-slate-200 flex items-center justify-center">
+      <div className="min-h-screen bg-[#F5F2FB] flex items-center justify-center px-8">
 
-        <div className="w-full max-w-md">
+        <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-16 items-center">
 
-          <h1 className="text-4xl font-bold text-center mb-8">
-            MemoraAI
-          </h1>
+          {/* Left */}
 
-          {showSignup ? (
+          <div>
 
-            <>
-              <Signup onSignup={() => setShowSignup(false)} />
+            <h1 className="text-6xl font-bold text-gray-800">
+              MemoraAI
+            </h1>
 
-              <p className="text-center mt-5">
-                Already have an account?
+            <p className="text-2xl text-purple-600 mt-5 font-medium">
+              Your Personal AI Knowledge Assistant
+            </p>
 
-                <button
-                  onClick={() => setShowSignup(false)}
-                  className="text-purple-600 ml-2"
-                >
-                  Login
-                </button>
+            <p className="text-gray-600 mt-8 text-lg leading-8 max-w-xl">
 
-              </p>
+              Upload your documents.
 
-            </>
+              Search through them instantly.
 
-          ) : (
+              Ask questions in natural language.
 
-            <>
-              <Login onLogin={() => setLoggedIn(true)} />
+              Get answers powered by AI.
 
-              <p className="text-center mt-5">
-                Don't have an account?
+            </p>
 
-                <button
-                  onClick={() => setShowSignup(true)}
-                  className="text-purple-600 ml-2"
-                >
-                  Sign Up
-                </button>
+            <div className="grid grid-cols-2 gap-5 mt-12">
 
-              </p>
+              <div className="bg-white rounded-3xl border border-purple-100 p-6">
 
-            </>
+                <h3 className="font-semibold text-lg">
+                  Upload
+                </h3>
 
-          )}
+                <p className="text-gray-500 mt-2">
+                  PDFs and Images
+                </p>
+
+              </div>
+
+              <div className="bg-white rounded-3xl border border-purple-100 p-6">
+
+                <h3 className="font-semibold text-lg">
+                  AI Search
+                </h3>
+
+                <p className="text-gray-500 mt-2">
+                  Find answers instantly
+                </p>
+
+              </div>
+
+              <div className="bg-white rounded-3xl border border-purple-100 p-6">
+
+                <h3 className="font-semibold text-lg">
+                  Secure
+                </h3>
+
+                <p className="text-gray-500 mt-2">
+                  JWT Authentication
+                </p>
+
+              </div>
+
+              <div className="bg-white rounded-3xl border border-purple-100 p-6">
+
+                <h3 className="font-semibold text-lg">
+                  Multiple Files
+                </h3>
+
+                <p className="text-gray-500 mt-2">
+                  Upload together
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* Right */}
+
+          <div>
+
+            {showSignup ? (
+
+              <>
+
+                <Signup
+                  onSignup={() => setShowSignup(false)}
+                />
+
+                <p className="text-center mt-6 text-gray-600">
+
+                  Already have an account?
+
+                  <button
+                    onClick={() => setShowSignup(false)}
+                    className="ml-2 text-purple-600 hover:underline"
+                  >
+                    Login
+                  </button>
+
+                </p>
+
+              </>
+
+            ) : (
+
+              <>
+
+                <Login
+                  onLogin={() => setLoggedIn(true)}
+                />
+
+                <p className="text-center mt-6 text-gray-600">
+
+                  Don't have an account?
+
+                  <button
+                    onClick={() => setShowSignup(true)}
+                    className="ml-2 text-purple-600 hover:underline"
+                  >
+                    Sign Up
+                  </button>
+
+                </p>
+
+              </>
+
+            )}
+
+          </div>
 
         </div>
 
@@ -108,99 +197,147 @@ function App() {
 
   return (
 
-    <div className="min-h-screen bg-slate-200 p-8">
+    <div className="min-h-screen bg-[#F5F2FB] px-8 py-10">
 
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-7xl mx-auto">
 
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center mb-10">
 
           <div>
 
-            <h1 className="text-4xl font-bold text-gray-800">
+            <h1 className="text-5xl font-bold text-gray-800">
               MemoraAI
             </h1>
 
             <p className="text-gray-500 mt-2">
-              Search your memories by meaning.
+              Your Personal AI Knowledge Assistant
             </p>
 
           </div>
 
           <button
             onClick={logout}
-            className="bg-red-100 text-red-600 px-4 py-2 rounded-xl hover:bg-red-200"
+            className="bg-white border border-red-200 text-red-600 px-5 py-2 rounded-xl hover:bg-red-50"
           >
             Logout
           </button>
 
         </div>
 
-        <MemoryUpload setMemories={setMemories} />
+        <div className="grid lg:grid-cols-5 gap-8">
 
-        <input
-          type="text"
-          placeholder="Search memories..."
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          className="w-full mt-6 p-3 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-400"
-        />
+          <div className="lg:col-span-2 space-y-8">
 
-        {memories.length === 0 ? (
+            <div>
 
-          <div className="bg-white p-6 rounded-2xl mt-6 text-center">
+              <h2 className="text-xl font-semibold mb-4">
+                Upload Documents
+              </h2>
 
-            <p className="text-gray-700 font-medium">
-              No memories yet
-            </p>
+              <MemoryUpload
+                setMemories={setMemories}
+              />
 
-            <p className="text-sm text-gray-400 mt-2">
-              Upload something to get started
-            </p>
+            </div>
+
+            <div>
+
+              <h2 className="text-xl font-semibold mb-4">
+                Search Documents
+              </h2>
+
+              <input
+                type="text"
+                placeholder="Search documents..."
+                value={searchText}
+                onChange={(e) =>
+                  setSearchText(e.target.value)
+                }
+                className="w-full bg-white border border-purple-200 rounded-2xl px-5 py-3 outline-none focus:ring-2 focus:ring-purple-300"
+              />
+
+            </div>
+
+            <div>
+
+              <h2 className="text-xl font-semibold mb-4">
+                Your Documents
+              </h2>
+                            {memories.length === 0 ? (
+
+                <div className="bg-white rounded-2xl border border-purple-100 p-8 text-center">
+
+                  <p className="text-gray-500">
+                    No documents uploaded yet.
+                  </p>
+
+                </div>
+
+              ) : (
+
+                <div className="space-y-4">
+
+                  {memories.map((item) => (
+
+                    <MemoryItem
+                      key={item.fileName}
+                      fileName={item.fileName}
+                      uploadedAt={item.uploadedAt}
+                      onDelete={async () => {
+
+                        const token = localStorage.getItem("token");
+
+                        try {
+
+                          await fetch(
+                            `http://localhost:8081/memories/${item.fileName}`,
+                            {
+                              method: "DELETE",
+                              headers: {
+                                Authorization: `Bearer ${token}`
+                              }
+                            }
+                          );
+
+                          setMemories((old) =>
+                            old.filter(
+                              (memory) =>
+                                memory.fileName !== item.fileName
+                            )
+                          );
+
+                        } catch (error) {
+
+                          console.log(error);
+
+                        }
+
+                      }}
+                    />
+
+                  ))}
+
+                </div>
+
+              )}
+
+            </div>
 
           </div>
 
-        ) : (
+          {/* Right Side */}
 
-          memories.map((item) => (
+          <div className="lg:col-span-3">
 
-            <MemoryItem
-              key={item.fileName}
-              fileName={item.fileName}
-              uploadedAt={item.uploadedAt}
-              onDelete={async () => {
+            <div className="sticky top-8">
 
-                const token = localStorage.getItem("token");
+              <AskQuestion />
 
-                try {
+            </div>
 
-                  await fetch(
-                    `http://localhost:8081/memories/${item.fileName}`,
-                    {
-                      method: "DELETE",
-                      headers: {
-                        Authorization: `Bearer ${token}`
-                      }
-                    }
-                  );
+          </div>
 
-                  setMemories((old) =>
-                    old.filter(
-                      (memory) => memory.fileName !== item.fileName
-                    )
-                  );
-
-                } catch (error) {
-
-                  console.log(error);
-
-                }
-
-              }}
-            />
-
-          ))
-
-        )}
+        </div>
 
       </div>
 

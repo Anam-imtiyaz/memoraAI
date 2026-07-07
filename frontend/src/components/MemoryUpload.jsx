@@ -2,57 +2,58 @@ import { useState } from "react";
 
 function MemoryUpload({ setMemories }) {
 
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
 
   function handleFileChange(event) {
-    setSelectedFile(event.target.files[0]);
+    setSelectedFiles(Array.from(event.target.files));
   }
 
   async function handleUpload() {
 
-    if (!selectedFile) {
-      alert("Please select a file first.");
+    if (selectedFiles.length === 0) {
+      alert("Please select at least one file.");
       return;
     }
 
     setUploading(true);
 
+    const token = localStorage.getItem("token");
+
     try {
 
-      const token = localStorage.getItem("token");
+      for (const file of selectedFiles) {
 
-      const formData = new FormData();
-      formData.append("file", selectedFile);
+        const formData = new FormData();
+        formData.append("file", file);
 
-      const response = await fetch("http://localhost:8081/hello", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: formData
-      });
+        const response = await fetch(
+          "http://localhost:8081/hello",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`
+            },
+            body: formData
+          }
+        );
 
-      const data = await response.text();
+        if (!response.ok) {
+          alert("Failed to upload " + file.name);
+          continue;
+        }
 
-      console.log("Status:", response.status);
-      console.log("Response:", data);
+        setMemories(old => [
+          {
+            fileName: file.name,
+            uploadedAt: "Just now"
+          },
+          ...old
+        ]);
 
-      if (!response.ok) {
-        alert(data);
-        setUploading(false);
-        return;
       }
 
-      setMemories(old => [
-        {
-          fileName: selectedFile.name,
-          uploadedAt: "Just now"
-        },
-        ...old
-      ]);
-
-      setSelectedFile(null);
+      setSelectedFiles([]);
       document.getElementById("memoryFile").value = "";
 
     } catch (error) {
@@ -68,32 +69,41 @@ function MemoryUpload({ setMemories }) {
 
   return (
 
-    <div className="bg-white p-8 rounded-3xl shadow-md border border-gray-200">
+    <div className="bg-white rounded-3xl border border-purple-100 shadow-lg p-8">
 
-      <h2 className="text-xl font-semibold text-gray-700 mb-2">
-        Upload Memories
-      </h2>
+      <div className="mb-6">
 
-      <p className="text-gray-500 text-sm mb-6">
-        Upload PDFs or screenshots
-      </p>
+        <h2 className="text-2xl font-semibold text-gray-800">
+          Upload Documents
+        </h2>
+
+        <p className="text-gray-500 mt-2">
+          Upload one or more PDFs or images.
+        </p>
+
+      </div>
 
       <label
         htmlFor="memoryFile"
-        className="flex flex-col items-center justify-center border-2 border-dashed border-purple-200 rounded-2xl p-10 bg-purple-50 cursor-pointer hover:bg-purple-100 transition"
+        className="block border-2 border-dashed border-purple-300 rounded-3xl p-10 text-center cursor-pointer hover:bg-purple-50 transition"
       >
 
-        <p className="text-gray-700 font-medium">
-          Drag and drop files here
-        </p>
+        <div className="text-5xl mb-4">
+          📄
+        </div>
 
-        <p className="text-gray-400 text-sm mt-1">
-          or click to browse PDFs and screenshots
+        <h3 className="text-lg font-semibold text-gray-700">
+          Drag & Drop Files
+        </h3>
+
+        <p className="text-gray-500 mt-2">
+          or click here to browse
         </p>
 
         <input
           id="memoryFile"
           type="file"
+          multiple
           accept=".pdf,.png,.jpg,.jpeg"
           className="hidden"
           onChange={handleFileChange}
@@ -101,17 +111,36 @@ function MemoryUpload({ setMemories }) {
 
       </label>
 
-      {selectedFile && (
+      {selectedFiles.length > 0 && (
 
-        <div className="mt-4 p-3 rounded-xl bg-purple-50 border border-purple-100">
+        <div className="mt-6">
 
-          <p className="text-sm text-gray-700 font-medium">
-            Selected File
-          </p>
+          <h3 className="font-semibold text-gray-700 mb-3">
+            Selected Files
+          </h3>
 
-          <p className="text-sm text-gray-500 mt-1">
-            {selectedFile.name}
-          </p>
+          <div className="space-y-2">
+
+            {selectedFiles.map((file, index) => (
+
+              <div
+                key={index}
+                className="flex justify-between items-center bg-purple-50 rounded-xl px-4 py-3"
+              >
+
+                <span className="text-gray-700">
+                  {file.name}
+                </span>
+
+                <span className="text-sm text-purple-600">
+                  {(file.size / 1024).toFixed(1)} KB
+                </span>
+
+              </div>
+
+            ))}
+
+          </div>
 
         </div>
 
@@ -120,16 +149,17 @@ function MemoryUpload({ setMemories }) {
       <button
         onClick={handleUpload}
         disabled={uploading}
-        className="mt-6 w-full py-3 rounded-xl bg-purple-200 hover:bg-purple-300 disabled:bg-gray-300 transition"
+        className="w-full mt-8 py-3 rounded-xl bg-purple-500 hover:bg-purple-600 text-white font-semibold transition disabled:bg-gray-300"
       >
 
-        {uploading ? "Uploading..." : "Upload"}
+        {uploading ? "Uploading..." : "Upload Files"}
 
       </button>
 
     </div>
 
   );
+
 }
 
 export default MemoryUpload;

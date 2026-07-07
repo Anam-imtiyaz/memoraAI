@@ -12,4 +12,6 @@ public interface DocumentChunkRepository
 
     List<DocumentChunk> findByMemory(Memory memory);
 
+    List<DocumentChunk> findByMemoryUserEmail(String userEmail);
+
 }
